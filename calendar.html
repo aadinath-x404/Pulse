@@ -1,93 +1,117 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pulse ⚡ — Calendar</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pulse - Calendar</title>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide-static@0.259.0/dist/lucide.js"></script>
-  <link rel="icon" href="data:,⚡">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide-static@0.259.0/dist/lucide.js"></script>
+    <link rel="icon" href="images/favicon.png">
 
-  <style>
-    .glass { backdrop-filter: blur(6px); background: rgba(255,255,255,0.03); }
-    .modal-backdrop { background: rgba(2,6,23,0.6); }
-  </style>
+    <style>
+        .glass {
+            backdrop-filter: blur(6px);
+        }
+
+        .modal-backdrop {
+            background: rgba(2, 6, 23, 0.6);
+        }
+    </style>
 </head>
-<body class="bg-neutral-900 text-neutral-100 font-inter min-h-screen">
 
-  <div class="min-h-screen flex">
-    <!-- ASIDE -->
-    <aside class="w-64 p-6 glass border-r border-neutral-800 hidden md:block">
-      <div class="mb-10">
-        <h1 class="text-2xl font-semibold tracking-tight">Pulse <span class="text-amber-400">⚡</span></h1>
-        <p class="text-sm text-neutral-400 mt-1">Calendar view</p>
-      </div>
+<body
+    class="bg-white text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100 font-inter min-h-screen transition-colors duration-300">
 
-      <nav class="space-y-2">
-        <a href="index.html" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-neutral-800">
-          Home
-        </a>
-        <a href="calendar.html" class="flex items-center gap-3 px-3 py-2 rounded-md bg-neutral-800">
-          Calendar
-        </a>
-      </nav>
-    </aside>
+    <div class="min-h-screen flex">
+        <!-- ASIDE -->
+        <aside
+            class="w-64 p-6 glass border-r border-neutral-200 dark:border-neutral-800 hidden md:block bg-white/60 dark:bg-neutral-900/30">
+            <div class="mb-10">
+                <h1 class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">Pulse <span
+                        class="text-amber-400">⚡</span></h1>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">Calendar view</p>
+            </div>
 
-    <!-- MAIN -->
-    <main class="flex-1 p-6">
-      <div class="max-w-4xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-3xl font-bold">Calendar</h2>
-            <p class="text-neutral-400 mt-1">Navigate months, view events, add new ones.</p>
-          </div>
+            <nav class="space-y-2">
+                <a href="index.html"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300">Home</a>
+                <a href="calendar.html"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100">Calendar</a>
+            </nav>
+        </aside>
 
-          <div class="flex gap-2 items-center">
-            <button id="prevMonthBtn" class="px-3 py-2 rounded-md bg-neutral-800">Prev</button>
-            <div id="monthLabel" class="px-4 py-2 text-lg font-medium"></div>
-            <button id="nextMonthBtn" class="px-3 py-2 rounded-md bg-neutral-800">Next</button>
-          </div>
-        </div>
+        <!-- MAIN -->
+        <main class="flex-1 p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Calendar</h2>
+                        <p class="text-neutral-600 dark:text-neutral-400 mt-1">Navigate months, view events, add new
+                            ones.</p>
+                    </div>
 
-        <!-- calendar grid -->
-        <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-neutral-100">
-          <!-- JS will render days -->
-        </div>
+                    <div class="flex gap-2 items-center">
+                        <button id="prevMonthBtn"
+                            class="px-3 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800">Prev</button>
+                        <div id="monthLabel"
+                            class="px-4 py-2 text-lg font-medium text-neutral-900 dark:text-neutral-100"></div>
+                        <button id="nextMonthBtn"
+                            class="px-3 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800">Next</button>
 
-        <!-- Add Event Modal (hidden initially) -->
-        <div id="modal" class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50">
-          <div class="bg-neutral-900 p-6 rounded-lg w-full max-w-md glass border border-neutral-800">
-            <h3 class="text-xl font-semibold mb-3">Add Event</h3>
-            <form id="addEventForm" class="space-y-3">
-              <div>
-                <label class="text-sm text-neutral-400">Title</label>
-                <input name="title" required class="w-full px-3 py-2 rounded-md bg-neutral-800" />
-              </div>
-              <div>
-                <label class="text-sm text-neutral-400">Date</label>
-                <input name="date" type="date" required class="w-full px-3 py-2 rounded-md bg-neutral-800" />
-              </div>
-              <div>
-                <label class="text-sm text-neutral-400">Time</label>
-                <input name="time" type="time" class="w-full px-3 py-2 rounded-md bg-neutral-800" />
-              </div>
-              <div class="flex justify-end gap-2">
-                <button type="button" id="cancelBtn" class="px-4 py-2 rounded-md bg-neutral-800">Cancel</button>
-                <button type="submit" class="px-4 py-2 rounded-md bg-amber-400 text-neutral-900 font-semibold">Add</button>
-              </div>
-            </form>
-          </div>
-        </div>
+                        <!-- Dark mode toggle -->
+                        <button id="toggle-dark"
+                            class="px-3 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                            aria-label="Toggle dark mode">🌙</button>
+                    </div>
+                </div>
 
-        <!-- Floating + button -->
-        <button id="addBtn" title="Add Event" class="fixed bottom-6 right-6 rounded-full w-14 h-14 flex items-center justify-center text-neutral-900 text-2xl bg-amber-400 shadow-lg">+</button>
-      </div>
-    </main>
-  </div>
+                <!-- calendar grid -->
+                <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-neutral-900 dark:text-neutral-100"></div>
 
-  <script src="script.js"></script>
-  <script>initCalendar();</script>
+                <!-- Add Event Modal (hidden initially) -->
+                <div id="modal" class="fixed inset-0 hidden items-center justify-center z-50">
+                    <div class="absolute inset-0 modal-backdrop"></div>
+                    <div
+                        class="relative bg-white dark:bg-neutral-900 p-6 rounded-lg w-full max-w-md glass border border-neutral-200 dark:border-neutral-800 z-10">
+                        <h3 class="text-xl font-semibold mb-3 text-neutral-900 dark:text-neutral-100">Add Event</h3>
+                        <form id="addEventForm" class="space-y-3">
+                            <div>
+                                <label class="text-sm text-neutral-700 dark:text-neutral-400">Title</label>
+                                <input name="title" required
+                                    class="w-full px-3 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100" />
+                            </div>
+                            <div>
+                                <label class="text-sm text-neutral-700 dark:text-neutral-400">Date</label>
+                                <input name="date" type="date" required
+                                    class="w-full px-3 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100" />
+                            </div>
+                            <div>
+                                <label class="text-sm text-neutral-700 dark:text-neutral-400">Time</label>
+                                <input name="time" type="time"
+                                    class="w-full px-3 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100" />
+                            </div>
+                            <div class="flex justify-end gap-2">
+                                <button type="button" id="cancelBtn"
+                                    class="px-4 py-2 rounded-md bg-neutral-100 dark:bg-neutral-800">Cancel</button>
+                                <button type="submit"
+                                    class="px-4 py-2 rounded-md bg-amber-400 text-neutral-900 font-semibold">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Floating + button -->
+                <button id="addBtn" title="Add Event"
+                    class="fixed bottom-6 right-6 rounded-full w-14 h-14 flex items-center justify-center text-neutral-900 text-2xl bg-amber-400 shadow-lg">+</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>initCalendar();</script>
 </body>
-                  </html>
+
+</html>
